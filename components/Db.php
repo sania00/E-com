@@ -7,11 +7,12 @@ class Db{
     public static function getConnection()
     {
 
-        $paramsPath = ROOT . '/config/db_params.php';
+        $paramsPath = (ROOT .'/config/bd_params.php');
         $params = include($paramsPath);
 
         $dns = "mysql:host={$params['host']};dbname={$params['dbname']}";
         $db = new PDO($dns, $params['user'], $params['password']);
+        $db->exec("set names utf8");
 
         return $db;
     }
