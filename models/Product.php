@@ -38,10 +38,15 @@ class Product{
     /**
      * Return array product by Category
      *
+     * Возвращает массив категории
+     *
      * @param bool $categoryId
+     * @param int $count
      * @return array
      */
-    public static function getProductsListByCategory($categoryId = false){
+    public static function getProductsListByCategory($categoryId = false, $count = self::SHOW_BY_DEFAULT){
+
+        $count = intval($count);
 
         if($categoryId){
 
@@ -50,7 +55,7 @@ class Product{
             $result = $db->query("SELECT id, name, price, image, is_new FROM product "
                 . "WHERE status = '1' AND category_id = '$categoryId'"
                 . "ORDER BY id DESC "
-                . "LIMIT ".self::SHOW_BY_DEFAULT);
+                . "LIMIT ".$count);
 
             $i = 0;
             while($row = $result->fetch()){
@@ -62,6 +67,28 @@ class Product{
                 $i++;
             }
             return $products;
+
+        }
+
+    }
+
+    /**
+     * Return array product by ID
+     *
+     * @param $id
+     * @return mixed
+     */
+    public static function getProductById($id){
+
+        $id = intval($id);
+
+        if($id) {
+            $db = Db::getConnection();
+
+            $result = $db->query('SELECT * FROM product WHERE id ='. $id);
+            $result->setFetchMode(PDO::FETCH_ASSOC);
+
+            return $result->fetch();
 
         }
 

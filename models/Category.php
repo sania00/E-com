@@ -6,6 +6,8 @@ class Category
     /**
      * Return array of categories
      *
+     * Возвращает массив категорий
+     *
      * @return array
      */
     public static function getCategoriesList(){
