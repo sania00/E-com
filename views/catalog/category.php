@@ -49,7 +49,15 @@
                                 </div>
                             </div>
                         <?php  endforeach;?>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <!--Постраничная навигация-->
+                                <div class="pagination-block">
+                                    <?php echo $pagination->get();?>
+                                </div>
 
+                            </div>
+                        </div>
                     </div><!--features_items-->
                 </div>
             </div>

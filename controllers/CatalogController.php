@@ -1,8 +1,5 @@
 <?php
 
-include_once ROOT . '/models/Category.php';
-include_once ROOT . '/models/Product.php';
-
 /**
  * Class CatalogController
  *
@@ -29,7 +26,6 @@ class CatalogController{
         return true;
     }
 
-
     /**
      * Каталог по категориям
      *
@@ -43,16 +39,18 @@ class CatalogController{
      *
      * @return bool
      */
-    public function actionCategory($categoryId, $page =1){
-
-        echo 'Категория: '.$categoryId;
-        echo '<br>Страница: '.$page;
+    public function actionCategory($categoryId, $page = 1){
 
         $categories = array();
         $categories = Category::getCategoriesList();
 
         $CategoryProducts = array();
-        $CategoryProducts = Product::getProductsListByCategory($categoryId, 7);
+        $CategoryProducts = Product::getProductsListByCategory($categoryId, $page);
+
+        $total = Product::getTotolProductsInCategory($categoryId);
+
+        //Создаем объект Pagination - постраничная навигация
+        $pagination = new Pagination($total, $page, Product::SHOW_BY_DEFAULT, 'page-');
 
         require_once(ROOT. '/views/catalog/category.php');
 

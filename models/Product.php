@@ -3,7 +3,7 @@
 
 class Product{
 
-    const SHOW_BY_DEFAULT = 10;
+    const SHOW_BY_DEFAULT = 6;
 
     /**Return array product
      *
@@ -11,16 +11,20 @@ class Product{
      * @param int $count
      * @return array
      */
-    public static function getLatestProduct ($count = self::SHOW_BY_DEFAULT){
+    public static function getLatestProduct ($count = self::SHOW_BY_DEFAULT, $page = 1){
 
         $count = intval($count);
-
+        $page = intval($page);
+        $offset = $page * $count;
         $db = Db::getConnection();
 
         $productList = array();
 
         $result = $db->query('SELECT id, name, price, image, is_new FROM product '
-                            .'WHERE status = "1" ORDER BY id DESC LIMIT '. $count);
+                            .'WHERE status = "1" '
+                            .'ORDER BY id DESC '
+                            .'LIMIT '. $count
+                            .' OFFSET '.$offset);
 
         $i = 0;
         while($row = $result->fetch()){
@@ -41,21 +45,24 @@ class Product{
      * Возвращает массив категории
      *
      * @param bool $categoryId
-     * @param int $count
+     *
      * @return array
      */
-    public static function getProductsListByCategory($categoryId = false, $count = self::SHOW_BY_DEFAULT){
-
-        $count = intval($count);
+    public static function getProductsListByCategory($categoryId = false, $page = 1){
 
         if($categoryId){
+
+            $page = intval($page);
+            $offset = ($page - 1) * self::SHOW_BY_DEFAULT;
 
             $db = Db::getConnection();
             $products = array();
             $result = $db->query("SELECT id, name, price, image, is_new FROM product "
-                . "WHERE status = '1' AND category_id = '$categoryId'"
-                . "ORDER BY id DESC "
-                . "LIMIT ".$count);
+                                ."WHERE status = '1' "
+                                ."AND category_id = '$categoryId'"
+                                ."ORDER BY id ASC "
+                                ."LIMIT ".self::SHOW_BY_DEFAULT
+                                .' OFFSET '.$offset);
 
             $i = 0;
             while($row = $result->fetch()){
@@ -92,6 +99,24 @@ class Product{
 
         }
 
+    }
+
+    /**
+     * Returns total products
+     *
+     * @param $categoryId
+     * @return mixed
+     */
+    public static function getTotolProductsInCategory($categoryId){
+
+        $db = Db::getConnection();
+
+        $result = $db->query('SELECT count(id) AS count FROM product WHERE status="1" AND category_id="'.$categoryId.'"');
+
+        $result->setFetchMode(PDO::FETCH_ASSOC);
+        $row = $result->fetch();
+
+        return $row['count'];
     }
 
 }
