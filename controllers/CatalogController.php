@@ -1,59 +1,47 @@
 <?php
 
 /**
- * Class CatalogController
- *
- * Категории товаров
+ * Контроллер CatalogController
+ * Каталог товаров
  */
-
-class CatalogController{
+class CatalogController
+{
 
     /**
-     * Каталог на главной странице
-     *
-     * @return bool
+     * Action для страницы "Каталог товаров"
      */
-    public function actionIndex(){
-
-        $categories = array();
+    public function actionIndex()
+    {
+        // Список категорий для левого меню
         $categories = Category::getCategoriesList();
 
-        $latestProducts = array();
-        $latestProducts = Product::getLatestProduct(6);
+        // Список последних товаров
+        $latestProducts = Product::getLatestProducts(12);
 
-        require_once(ROOT. '/views/catalog/index.php');
-
+        // Подключаем вид
+        require_once(ROOT . '/views/catalog/index.php');
         return true;
     }
 
     /**
-     * Каталог по категориям
-     *
-     * Принимает ID категории
-     *
-     * @param $categoryId
-     *
-     * Принимает номер страницы
-     *
-     * @param int $page
-     *
-     * @return bool
+     * Action для страницы "Категория товаров"
      */
-    public function actionCategory($categoryId, $page = 1){
-
-        $categories = array();
+    public function actionCategory($categoryId, $page = 1)
+    {
+        // Список категорий для левого меню
         $categories = Category::getCategoriesList();
 
-        $CategoryProducts = array();
-        $CategoryProducts = Product::getProductsListByCategory($categoryId, $page);
+        // Список товаров в категории
+        $categoryProducts = Product::getProductsListByCategory($categoryId, $page);
 
-        $total = Product::getTotolProductsInCategory($categoryId);
+        // Общее количетсво товаров (необходимо для постраничной навигации)
+        $total = Product::getTotalProductsInCategory($categoryId);
 
-        //Создаем объект Pagination - постраничная навигация
+        // Создаем объект Pagination - постраничная навигация
         $pagination = new Pagination($total, $page, Product::SHOW_BY_DEFAULT, 'page-');
 
-        require_once(ROOT. '/views/catalog/category.php');
-
+        // Подключаем вид
+        require_once(ROOT . '/views/catalog/category.php');
         return true;
     }
 

@@ -1,17 +1,26 @@
 <?php
 
-class Db{
-    /**Подключение к БД
-     * @return PDO
+/**
+ * Класс Db
+ * Компонент для работы с базой данных
+ */
+class Db
+{
+    /**
+     * Устанавливает соединение с базой данных
+     * @return \PDO <p>Объект класса PDO для работы с БД</p>
      */
     public static function getConnection()
     {
-
-        $paramsPath = (ROOT .'/config/bd_params.php');
+        // Получаем параметры подключения из файла
+        $paramsPath = ROOT . '/config/db_params.php';
         $params = include($paramsPath);
 
-        $dns = "mysql:host={$params['host']};dbname={$params['dbname']}";
-        $db = new PDO($dns, $params['user'], $params['password']);
+        // Устанавливаем соединение
+        $dsn = "mysql:host={$params['host']};dbname={$params['dbname']}";
+        $db = new PDO($dsn, $params['user'], $params['password']);
+
+        // Задаем кодировку
         $db->exec("set names utf8");
 
         return $db;
